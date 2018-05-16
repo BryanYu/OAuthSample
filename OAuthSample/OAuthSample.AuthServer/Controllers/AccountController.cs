@@ -10,20 +10,25 @@ namespace OAuthSample.AuthServer.Controllers
 {
     public class AccountController : Controller
     {
+        [HttpGet]
         public ActionResult Login()
         {
             return this.View();
         }
 
         [HttpPost]
-        public ActionResult Login(string userName, string password, bool isPersistent = false)
+        public ActionResult Login(string userName,
+                                  string password,
+                                  bool? isPersistent = false)
         {
             var authentication = HttpContext.GetOwinContext().Authentication;
-            var claims = new[] { new Claim(ClaimsIdentity.DefaultNameClaimType, userName) };
-            var claimsIdentity = new ClaimsIdentity(claims, "Application");
-            var properties = new AuthenticationProperties() { IsPersistent = isPersistent };
-            authentication.SignIn(properties, claimsIdentity);
-            return RedirectToAction("Authorize", "OAuth");
+
+            var authenticationProperties =
+                new AuthenticationProperties() { IsPersistent = isPersistent.GetValueOrDefault() };
+            var claim = new Claim(ClaimsIdentity.DefaultNameClaimType, userName);
+            var claimsIdentity = new ClaimsIdentity(new[] { claim }, "Application");
+            authentication.SignIn(authenticationProperties, claimsIdentity);
+            return View();
         }
 
         public ActionResult Logout()

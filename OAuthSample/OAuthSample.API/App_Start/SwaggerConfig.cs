@@ -73,8 +73,8 @@ namespace OAuthSample.API
                         c.OAuth2("oauth2")
                             .Description("OAuth2 Implicit Grant")
                             .Flow("implicit")
-                            .AuthorizationUrl("http://localhost:57585/Account/Login")
-                            .TokenUrl("http://localhost:57585/token")
+                            .AuthorizationUrl("http://localhost:57585/OAuth/Authorize")
+                            .TokenUrl("http://localhost:57585/OAuth/Token")
                             .Scopes(scopes =>
                             {
                                 scopes.Add("read", "Read access to protected resources");

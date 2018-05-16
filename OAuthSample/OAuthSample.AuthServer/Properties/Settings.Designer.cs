@@ -43,7 +43,7 @@ namespace OAuthSample.AuthServer.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(":")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:57653/swagger/ui/o2c-html")]
         public string RedirectUrl {
             get {
                 return ((string)(this["RedirectUrl"]));

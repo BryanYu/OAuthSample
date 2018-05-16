@@ -9,12 +9,7 @@ namespace OAuthSample.AuthServer.Controllers
 {
     public class OAuthController : Controller
     {
-        public ActionResult Authorize(string temp)
-        {
-            return this.View();
-        }
-
-        [HttpPost]
+        [HttpGet]
         public ActionResult Authorize()
         {
             if (Response.StatusCode != 200)
@@ -31,36 +26,34 @@ namespace OAuthSample.AuthServer.Controllers
                 return new HttpUnauthorizedResult();
             }
 
-            var scope = Request.QueryString["scope"] ?? "";
-            var scopes = (scope ?? "").Split(' ');
+            return this.View();
+        }
 
-            if (Request.HttpMethod == "POST")
+        [HttpPost]
+        public ActionResult Authorize(string scope)
+        {
+            var authentication = HttpContext.GetOwinContext().Authentication;
+            var ticket = authentication.AuthenticateAsync("Application").Result;
+            var identity = ticket != null ? ticket.Identity : null;
+
+            identity = new ClaimsIdentity(identity.Claims, "Bearer", identity.NameClaimType, identity.RoleClaimType);
+            var scopesList = scope.Split(' ').ToList();
+            foreach (var arg in scopesList)
             {
-                if (!string.IsNullOrEmpty(Request.Form.Get("submit.Grant")))
-                {
-                    identity = new ClaimsIdentity(
-                        identity.Claims,
-                        "Bearer",
-                        identity.NameClaimType,
-                        identity.RoleClaimType);
-
-                    foreach (var arg in scopes)
-                    {
-                        identity.AddClaim(new Claim("urn:oauth:scope", arg));
-                    }
-
-                    authentication.SignIn(identity);
-                }
-
-                if (!string.IsNullOrEmpty(Request.Form.Get("submit.Login")))
-                {
-                    authentication.SignOut("Application");
-                    authentication.Challenge("Application");
-                    return new HttpUnauthorizedResult();
-                }
+                identity.AddClaim(new Claim("urn:oauth:scope", arg));
             }
 
+            authentication.SignIn(identity);
             return this.View();
+        }
+
+        [HttpPost]
+        public ActionResult SignInDifferentUser()
+        {
+            var authentication = HttpContext.GetOwinContext().Authentication;
+            authentication.SignOut("Application");
+            authentication.Challenge("Application");
+            return new HttpUnauthorizedResult();
         }
     }
 }

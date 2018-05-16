@@ -1,21 +1,12 @@
-﻿﻿@using System
-@using System.Linq
-@using System.Security.Claims
-@using System.Web
-@using Microsoft.Owin.Security
-@{
-    var authentication = Context.GetOwinContext().Authentication;
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Login</title>
 </head>
 <body>
-    <h1>Authorization Server</h1>
-    <form method="POST" action="@Url.Action("Login","Account")">
-        <h2>Forms Login</h2>
+<h1>Authorization Server</h1>
+<form method="POST">
+    <h2>Forms Login</h2>
     <ul>
         <li>
             <label for="username">User name: </label>
@@ -27,11 +18,11 @@
         </li>
         <li>
             @*<input type="checkbox" id="isPersistent" name="isPersistent" checked="checked" />*@
-            <input type="checkbox" id="isPersistent" name="isPersistent" value="true" />
+            <input type="checkbox" id="isPersistent" name="isPersistent" />
             <label for="isPersistent">Remember Me</label>
             <input type="submit" name="submit.Signin" value="Sign In" />
         </li>
     </ul>
-    </form>
+</form>
 </body>
 </html>

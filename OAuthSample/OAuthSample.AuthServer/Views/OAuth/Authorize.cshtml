@@ -12,21 +12,23 @@
     <title>Authorize</title>
 </head>
 <body>
-    <h1>Authorization Server</h1>
-    <h2>OAuth2 Authorize</h2>
-    <form method="POST" action="@Url.Action("Authorize","OAuth")">
-        <p>Hello, @identity.Name</p>
-        <p>A third party application want to do the following on your behalf:</p>
-        <ul>
-            @foreach (var scope in scopes)
-            {
-                <li>@scope</li>
-            }
-        </ul>
-        <p>
-            <input type="submit" name="submit.Grant" value="Grant" />
-            <input type="submit" name="submit.Login" value="Sign in as different user" />
-        </p>
-    </form>
+<h1>Authorization Server</h1>
+<h2>OAuth2 Authorize</h2>
+<form method="POST">
+    <p>Hello, @identity.Name</p>
+    <p>A third party application want to do the following on your behalf:</p>
+    <ul>
+        @foreach (var scope in scopes)
+        {
+            <li>@scope</li>
+        }
+    </ul>
+    <p>
+        <input type="submit" name="submit.Grant" value="Grant" />
+    </p>
+</form>
+<form action="@Url.Action("SignInDifferentUser","OAuth")" method="POST">
+    <input type="submit" name="submit.Login" value="Sign in as different user" />
+</form>
 </body>
 </html>

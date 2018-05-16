@@ -4,8 +4,10 @@ using System.Diagnostics;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Infrastructure;
 using Microsoft.Owin.Security.OAuth;
+using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security;
 
 namespace OAuthSample.AuthServer
 {
@@ -16,16 +18,25 @@ namespace OAuthSample.AuthServer
 
         public void ConfigureAuth(IAppBuilder app)
         {
+            app.UseCookieAuthentication(
+                new CookieAuthenticationOptions()
+                {
+                    AuthenticationType = "Application",
+                    AuthenticationMode = AuthenticationMode.Passive,
+                    LoginPath = new PathString("/Account/Login"),
+                    LogoutPath = new PathString("/Account/Logout"),
+                });
+
             app.UseOAuthAuthorizationServer(
                 new OAuthAuthorizationServerOptions()
                 {
-                    AuthorizeEndpointPath = new PathString("/Authorize"),
-                    TokenEndpointPath = new PathString("/Token"),
+                    AuthorizeEndpointPath = new PathString("/OAuth/Authorize"),
+                    TokenEndpointPath = new PathString("/OAuth/Token"),
                     ApplicationCanDisplayErrors = true,
                     AllowInsecureHttp = true,
                     Provider = new OAuthAuthorizationServerProvider()
                     {
-                        OnValidateClientRedirectUri = OnValidateClientRedirectUri,
+                        OnValidateClientRedirectUri = ValidateClientRedirectUri,
                         OnValidateClientAuthentication = OnValidateClientAuthentication,
                         OnGrantResourceOwnerCredentials = OnGrantResourceOwnerCredentials,
                         OnGrantClientCredentials = OnGrantClientCredentials,
@@ -43,7 +54,7 @@ namespace OAuthSample.AuthServer
                 });
         }
 
-        public Task OnValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
+        public Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
         {
             // 驗證Client Application預先註冊的回呼Url(用ClientId驗)
 
