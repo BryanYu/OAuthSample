@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthSample.AuthServer", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthSample.API", "OAuthSample.API\OAuthSample.API.csproj", "{24C67091-23BC-4C23-9CF7-7B78AE603253}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{98C158A4-391C-4F42-86C4-E04349691193}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthSample.AuthorizationCodeGrantFlow", "OAuthSample.AuthorizationCodeGrantFlow\OAuthSample.AuthorizationCodeGrantFlow.csproj", "{00A0516D-7903-488A-A7B0-8D169A0CC460}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +25,16 @@ Global
 		{24C67091-23BC-4C23-9CF7-7B78AE603253}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24C67091-23BC-4C23-9CF7-7B78AE603253}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24C67091-23BC-4C23-9CF7-7B78AE603253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{00A0516D-7903-488A-A7B0-8D169A0CC460} = {98C158A4-391C-4F42-86C4-E04349691193}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E729EB72-C180-4E70-A715-E4E59CA6B0D8}

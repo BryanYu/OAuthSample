@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Owin.Security;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.Owin.Security;
 
 namespace OAuthSample.AuthServer.Controllers
 {
@@ -22,6 +19,10 @@ namespace OAuthSample.AuthServer.Controllers
                                   bool? isPersistent = false)
         {
             var authentication = HttpContext.GetOwinContext().Authentication;
+
+            /*
+             * 在這邊實作使用者驗證機制，驗證通過後才能產生Claim與ClaimsIdentity
+             */
 
             var authenticationProperties =
                 new AuthenticationProperties() { IsPersistent = isPersistent.GetValueOrDefault() };

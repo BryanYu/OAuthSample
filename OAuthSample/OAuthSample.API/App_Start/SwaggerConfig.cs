@@ -72,7 +72,7 @@ namespace OAuthSample.API
                         //
                         c.OAuth2("oauth2")
                             .Description("OAuth2 Implicit Grant")
-                            .Flow("implicit")
+                            .Flow("accessCode")
                             .AuthorizationUrl("http://localhost:57585/OAuth/Authorize")
                             .TokenUrl("http://localhost:57585/OAuth/Token")
                             .Scopes(scopes =>
