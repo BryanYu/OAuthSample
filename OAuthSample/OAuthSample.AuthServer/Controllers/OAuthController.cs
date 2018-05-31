@@ -4,14 +4,23 @@ using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using OAuthSample.Service.Interfaces;
 
 namespace OAuthSample.AuthServer.Controllers
 {
     public class OAuthController : Controller
     {
+        private readonly IUserService _userService;
+
+        public OAuthController(IUserService userService)
+        {
+            this._userService = userService;
+        }
+
         [HttpGet]
         public ActionResult Authorize()
         {
+            var result = this._userService.IsValid();
             if (Response.StatusCode != 200)
             {
                 return this.View("AuthorizeError");
@@ -35,6 +44,8 @@ namespace OAuthSample.AuthServer.Controllers
             /*
              * 這裡是授權，scope會由
              */
+
+            var result = this._userService.IsValid();
             if (Response.StatusCode != 200)
             {
                 return View("AuthorizeError");

@@ -8,14 +8,18 @@ using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Integration.Owin;
 using Microsoft.Owin.Security;
+using OAuthSample.Service.Implements;
+using OAuthSample.Service.Interfaces;
 
 namespace OAuthSample.AuthServer
 {
     public partial class Startup
     {
         private readonly ConcurrentDictionary<string, string> _authenticationCodes =
-            new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
+                    new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
         private readonly ConcurrentDictionary<string, string> _client =
             new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
@@ -23,6 +27,7 @@ namespace OAuthSample.AuthServer
         public void ConfigureAuth(IAppBuilder app)
         {
             this._client.TryAdd("OAuthSample.AuthorizationCodeGrantFlow", "http://localhost:13082/OAuth/Redirect");
+            this._client.TryAdd("OAuthSample.API", "http://localhost:57653/swagger/ui/o2c-html");
 
             /*
              * 在Authorization Code Grant Flow與Implicit Grant Flow的流程中，
@@ -77,6 +82,10 @@ namespace OAuthSample.AuthServer
 
         public Task OnValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
         {
+            var scope = context.OwinContext.GetAutofacLifetimeScope();
+            var providerService = scope.Resolve<IProviderService>();
+
+            var message = providerService.GetSampleMessage();
             // 驗證Client Application預先註冊的回呼Url(用ClientId驗)
             if (this._client.ContainsKey(context.ClientId))
             {

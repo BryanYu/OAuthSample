@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthSample.AuthorizationCodeGrantFlow", "OAuthSample.AuthorizationCodeGrantFlow\OAuthSample.AuthorizationCodeGrantFlow.csproj", "{00A0516D-7903-488A-A7B0-8D169A0CC460}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthSample.Service", "OAuthSample.Service\OAuthSample.Service.csproj", "{E59F3DFD-4831-435E-884D-FE92C8047C59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00A0516D-7903-488A-A7B0-8D169A0CC460}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E59F3DFD-4831-435E-884D-FE92C8047C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E59F3DFD-4831-435E-884D-FE92C8047C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E59F3DFD-4831-435E-884D-FE92C8047C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E59F3DFD-4831-435E-884D-FE92C8047C59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
