@@ -1,0 +1,33 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>OAuth Sample</h2>
+
+<label>取得OAuth Authorize Code</label>
+<br />
+
+<a href="@ViewBag.AuthUrl">取得OAuth Authorize Code</a>
+<br />
+
+@if (ViewBag.Code != null)
+{
+    <label>AuthorizationCode: @ViewBag.Code</label>
+    <br />
+
+}
+
+@if (ViewBag.State != null)
+{
+    <label>State: @ViewBag.State</label>
+}
+
+
+<label>取得AccessToken與RefreshToken</label>
+
+<form action="@Url.Action("Token", "Home")" method="post">
+    <input name="code" type="hidden" value="@ViewBag.Code" />
+    <input type="submit" name="submit" value="取得Token" />
+</form>

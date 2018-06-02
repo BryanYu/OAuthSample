@@ -9,6 +9,7 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Threading.Tasks;
 using Microsoft.Owin.Security;
+using OAuthSample.Common.Path;
 
 namespace OAuthSample.AuthServer
 {
@@ -22,7 +23,7 @@ namespace OAuthSample.AuthServer
 
         public void ConfigureAuth(IAppBuilder app)
         {
-            this._client.TryAdd("OAuthSample.AuthorizationCodeGrantFlow", "http://localhost:13082/OAuth/Redirect");
+            this._client.TryAdd("OAuthSample.AuthorizationCodeGrantFlow", "http://localhost:13082/Home/Redirect");
 
             /*
              * 在Authorization Code Grant Flow與Implicit Grant Flow的流程中，
@@ -37,8 +38,8 @@ namespace OAuthSample.AuthServer
                 {
                     AuthenticationType = "Application",
                     AuthenticationMode = AuthenticationMode.Passive,
-                    LoginPath = new PathString("/Account/Login"),
-                    LogoutPath = new PathString("/Account/Logout"),
+                    LoginPath = new PathString(AuthEndPoint.LoginPath),
+                    LogoutPath = new PathString(AuthEndPoint.LogoutPath),
                 });
             /*
              * 在Authorization Code Grant Flow的流程中，
@@ -51,8 +52,8 @@ namespace OAuthSample.AuthServer
             app.UseOAuthAuthorizationServer(
                 new OAuthAuthorizationServerOptions()
                 {
-                    AuthorizeEndpointPath = new PathString("/OAuth/Authorize"),
-                    TokenEndpointPath = new PathString("/OAuth/Token"),
+                    AuthorizeEndpointPath = new PathString(AuthEndPoint.AuthorizeEndpoint),
+                    TokenEndpointPath = new PathString(AuthEndPoint.TokenEndpointPath),
                     ApplicationCanDisplayErrors = true,
                     AllowInsecureHttp = true,
                     Provider = new OAuthAuthorizationServerProvider()
@@ -61,11 +62,13 @@ namespace OAuthSample.AuthServer
                         OnValidateClientAuthentication = OnValidateClientAuthentication,
                         OnGrantResourceOwnerCredentials = OnGrantResourceOwnerCredentials,
                         OnGrantClientCredentials = OnGrantClientCredentials,
+                        OnGrantAuthorizationCode = OnGrantAuthorizationCode,
+                        OnValidateTokenRequest = OnValidateTokenRequest,
                     },
                     AuthorizationCodeProvider = new AuthenticationTokenProvider
                     {
                         OnCreate = CreateAuthenticationCode,
-                        OnReceive = ReceiveAuthenticationCode
+                        OnReceive = ReceiveAuthenticationCode,
                     },
                     RefreshTokenProvider = new AuthenticationTokenProvider
                     {
@@ -97,8 +100,8 @@ namespace OAuthSample.AuthServer
             if (context.TryGetBasicCredentials(out clientId, out clientSecret)
                 || context.TryGetFormCredentials(out clientId, out clientSecret))
             {
-                if (clientId == Properties.Settings.Default.Client
-                    && clientSecret == Properties.Settings.Default.Secret)
+                if (clientId == "OAuthSample.AuthorizationCodeGrantFlow"
+                    && clientSecret == "OAuthSample.API.Secret")
                 {
                     context.Validated();
                 }
@@ -136,10 +139,23 @@ namespace OAuthSample.AuthServer
 
         public void CreateRefreshToken(AuthenticationTokenCreateContext context)
         {
+            context.SetToken("123456");
         }
 
         public void ReceiveRefreshToken(AuthenticationTokenReceiveContext context)
         {
+        }
+
+        public Task OnGrantAuthorizationCode(OAuthGrantAuthorizationCodeContext context)
+        {
+            var error = context.Error;
+            return Task.FromResult(0);
+        }
+
+        public Task OnValidateTokenRequest(OAuthValidateTokenRequestContext context)
+        {
+            var error = context.Error;
+            return Task.FromResult(0);
         }
     }
 }
