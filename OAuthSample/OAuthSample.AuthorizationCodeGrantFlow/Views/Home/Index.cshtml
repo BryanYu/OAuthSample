@@ -4,7 +4,7 @@
     ViewBag.Title = "title";
 }
 
-<h2>OAuth Sample</h2>
+<h2>OAuth Authorization Code Grnat Flow Sample</h2>
 
 <label>取得OAuth Authorize Code</label>
 <br />
@@ -31,3 +31,11 @@
     <input name="code" type="hidden" value="@ViewBag.Code" />
     <input type="submit" name="submit" value="取得Token" />
 </form>
+
+@if (ViewBag.TokenResponse != null)
+{
+    <label>Token: @ViewBag.TokenResponse</label>
+
+}
+
+

@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OAuthSample.AuthorizationCodeGrantFlow.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ClientId" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">OAuthSample.AuthorizationCodeGrantFlow</Value>
+    </Setting>
+    <Setting Name="Secret" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">OAuthSample.AuthorizationCodeGrantFlow.Secret</Value>
+    </Setting>
+    <Setting Name="RedirectUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:13082/Home/Redirect</Value>
+    </Setting>
+    <Setting Name="AuthUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">/OAuth/Authorize</Value>
+    </Setting>
+    <Setting Name="TokenUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">/OAuth/Token</Value>
+    </Setting>
+    <Setting Name="Roles" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">GeneralMember,Admin</Value>
+    </Setting>
+    <Setting Name="AuthServer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:57585</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

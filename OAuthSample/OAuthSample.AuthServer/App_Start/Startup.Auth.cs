@@ -9,22 +9,16 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Threading.Tasks;
 using Microsoft.Owin.Security;
-using OAuthSample.Common.Path;
+using OAuthSample.Common;
 
 namespace OAuthSample.AuthServer
 {
     public partial class Startup
     {
-        private readonly ConcurrentDictionary<string, string> _authenticationCodes =
-            new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
-
-        private readonly ConcurrentDictionary<string, string> _client =
-            new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
+        private readonly ClientService _clientService = new ClientService();
 
         public void ConfigureAuth(IAppBuilder app)
         {
-            this._client.TryAdd("OAuthSample.AuthorizationCodeGrantFlow", "http://localhost:13082/Home/Redirect");
-
             /*
              * 在Authorization Code Grant Flow與Implicit Grant Flow的流程中，
              * 要重導向讓使用者填入帳號密碼進行驗證，所以在這邊需要設定使用者登入的頁面路徑
@@ -38,8 +32,8 @@ namespace OAuthSample.AuthServer
                 {
                     AuthenticationType = "Application",
                     AuthenticationMode = AuthenticationMode.Passive,
-                    LoginPath = new PathString(AuthEndPoint.LoginPath),
-                    LogoutPath = new PathString(AuthEndPoint.LogoutPath),
+                    LoginPath = new PathString("/Account/Login"),
+                    LogoutPath = new PathString("/Account/Logout"),
                 });
             /*
              * 在Authorization Code Grant Flow的流程中，
@@ -52,8 +46,8 @@ namespace OAuthSample.AuthServer
             app.UseOAuthAuthorizationServer(
                 new OAuthAuthorizationServerOptions()
                 {
-                    AuthorizeEndpointPath = new PathString(AuthEndPoint.AuthorizeEndpoint),
-                    TokenEndpointPath = new PathString(AuthEndPoint.TokenEndpointPath),
+                    AuthorizeEndpointPath = new PathString("/OAuth/Authorize"),
+                    TokenEndpointPath = new PathString("/OAuth/Token"),
                     ApplicationCanDisplayErrors = true,
                     AllowInsecureHttp = true,
                     Provider = new OAuthAuthorizationServerProvider()
@@ -62,13 +56,11 @@ namespace OAuthSample.AuthServer
                         OnValidateClientAuthentication = OnValidateClientAuthentication,
                         OnGrantResourceOwnerCredentials = OnGrantResourceOwnerCredentials,
                         OnGrantClientCredentials = OnGrantClientCredentials,
-                        OnGrantAuthorizationCode = OnGrantAuthorizationCode,
-                        OnValidateTokenRequest = OnValidateTokenRequest,
                     },
                     AuthorizationCodeProvider = new AuthenticationTokenProvider
                     {
-                        OnCreate = CreateAuthenticationCode,
                         OnReceive = ReceiveAuthenticationCode,
+                        OnCreate = CreateAuthenticationCode,
                     },
                     RefreshTokenProvider = new AuthenticationTokenProvider
                     {
@@ -80,28 +72,29 @@ namespace OAuthSample.AuthServer
 
         public Task OnValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
         {
-            // 驗證Client Application預先註冊的回呼Url(用ClientId驗)
-            if (this._client.ContainsKey(context.ClientId))
+            // Authorize Code Grnat Step1
+
+            // 驗證Client Application預先註冊的ClientId，如果驗證通過就使用預先註冊的RedirectUrI
+
+            var clientInfo = _clientService.GetClient(context.ClientId);
+            if (clientInfo != null)
             {
-                context.Validated(this._client[context.ClientId]);
+                context.Validated(clientInfo.RedirectUrI);
             }
 
-            Debug.WriteLine("OnValidateClientRedirectUri");
             return Task.FromResult(0);
         }
 
         public Task OnValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             // 驗證Client預先註冊的資訊(ClientId,Secret)
+            // Client透過 Authorization Header 填入 Basic Base64(Client:Secret)
+            // 在這邊使用context.TryGetBasicCredentials就會解出Base64中的資訊
 
-            string clientId = string.Empty;
-            string clientSecret = string.Empty;
-
-            if (context.TryGetBasicCredentials(out clientId, out clientSecret)
-                || context.TryGetFormCredentials(out clientId, out clientSecret))
+            if (context.TryGetBasicCredentials(out string clientId, out string clientSecret))
             {
-                if (clientId == "OAuthSample.AuthorizationCodeGrantFlow"
-                    && clientSecret == "OAuthSample.API.Secret")
+                var clientInfo = this._clientService.GetClient(clientId);
+                if (clientInfo != null && clientInfo.ClientSecret == clientSecret)
                 {
                     context.Validated();
                 }
@@ -123,39 +116,28 @@ namespace OAuthSample.AuthServer
         public void CreateAuthenticationCode(AuthenticationTokenCreateContext context)
         {
             // 產出驗證碼
-            context.SetToken(Guid.NewGuid().ToString("n") + Guid.NewGuid().ToString("n"));
-            this._authenticationCodes[context.Token] = context.SerializeTicket();
+            var authenticationCode = Guid.NewGuid().ToString("n") + Guid.NewGuid().ToString("n");
+            context.SetToken(authenticationCode);
+            this._clientService.AddAuthenicationCode(authenticationCode, context.SerializeTicket());
         }
 
         public void ReceiveAuthenticationCode(AuthenticationTokenReceiveContext context)
         {
-            // 收到驗證碼時的處理
-            string value = string.Empty;
-            if (this._authenticationCodes.TryRemove(context.Token, out value))
+            // 收到驗證碼時的處理，收到的code是存在context.Token變數中
+            // 為了不讓語意造成混淆，另外寫新的變數存放
+            var authenticationCode = context.Token;
+            if (this._clientService.IsAuthenicationCodeExist(authenticationCode, out string token))
             {
-                context.DeserializeTicket(value);
+                context.DeserializeTicket(token);
             }
         }
 
         public void CreateRefreshToken(AuthenticationTokenCreateContext context)
         {
-            context.SetToken("123456");
         }
 
         public void ReceiveRefreshToken(AuthenticationTokenReceiveContext context)
         {
-        }
-
-        public Task OnGrantAuthorizationCode(OAuthGrantAuthorizationCodeContext context)
-        {
-            var error = context.Error;
-            return Task.FromResult(0);
-        }
-
-        public Task OnValidateTokenRequest(OAuthValidateTokenRequestContext context)
-        {
-            var error = context.Error;
-            return Task.FromResult(0);
         }
     }
 }
