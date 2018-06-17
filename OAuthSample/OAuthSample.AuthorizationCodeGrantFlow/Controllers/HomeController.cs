@@ -5,6 +5,10 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+
+using Newtonsoft.Json;
+
+using OAuthSample.AuthorizationCodeGrantFlow.Model;
 using OAuthSample.AuthorizationCodeGrantFlow.Properties;
 using RestSharp;
 
@@ -45,8 +49,20 @@ namespace OAuthSample.AuthorizationCodeGrantFlow.Controllers
             request.AddParameter("redirect_uri", Settings.Default.RedirectUri);
 
             var response = restClient.Execute(request);
-            ViewBag.TokenResponse = response.Content;
+            var token = JsonConvert.DeserializeObject<TokenModel>(response.Content);
+            ViewBag.Token = token;
+            
+            return this.View("Index");
+        }
 
+        [HttpPost]
+        public ActionResult GetUser(string tokenType, string accessToken)
+        {
+            var restClient = new RestClient(Settings.Default.ResourceServer);
+            var request = new RestRequest("api/User", Method.GET);
+            request.AddHeader("Authorization", $"{tokenType} {accessToken}");
+            var response = restClient.Execute(request);
+            ViewBag.GetUserResponse = response.Content;
             return this.View("Index");
         }
     }

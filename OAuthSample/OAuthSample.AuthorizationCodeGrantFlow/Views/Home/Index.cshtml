@@ -1,4 +1,5 @@
-﻿@model dynamic
+﻿@using OAuthSample.AuthorizationCodeGrantFlow.Model
+@model dynamic
 
 @{
     ViewBag.Title = "title";
@@ -24,7 +25,6 @@
     <label>State: @ViewBag.State</label>
 }
 
-
 <label>取得AccessToken與RefreshToken</label>
 
 <form action="@Url.Action("Token", "Home")" method="post">
@@ -32,10 +32,39 @@
     <input type="submit" name="submit" value="取得Token" />
 </form>
 
-@if (ViewBag.TokenResponse != null)
-{
-    <label>Token: @ViewBag.TokenResponse</label>
+@{
+    var token = ViewBag.Token as TokenModel;
 
+}
+
+@if (ViewBag.Token != null)
+{
+    
+    <label>AccessToken: @token.AccessToken</label>
+    <br />
+    <label>ExpireIn: @token.ExpireIn</label>
+    <br />
+    <label>RefreshToken: @token.RefreshToken</label>
+    <br />
+    <label>Scope: @token.Scope</label>
+    <br />
+    <label>TokenType: @token.TokenType</label>
+    
+}
+
+
+<form action="@Url.Action("GetUser", "Home")" method="post">
+    @if (token != null)
+    {
+        <input type="hidden" name="accessToken" value="@token.AccessToken"/>
+        <input type="hidden" name="tokenType" value="@token.TokenType"/>
+    }
+    <input type="submit" value="向Resource Server取得資料"/>
+</form>
+
+@if (ViewBag.GetUserResponse != null)
+{
+    <label>GetUserResponse : @ViewBag.GetUserResponse </label>
 }
 
 

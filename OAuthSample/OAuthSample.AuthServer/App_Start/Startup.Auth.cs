@@ -9,7 +9,7 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Threading.Tasks;
 using Microsoft.Owin.Security;
-using OAuthSample.Common;
+using OAuthSample.Service;
 
 namespace OAuthSample.AuthServer
 {
@@ -134,10 +134,12 @@ namespace OAuthSample.AuthServer
 
         public void CreateRefreshToken(AuthenticationTokenCreateContext context)
         {
+            
         }
 
         public void ReceiveRefreshToken(AuthenticationTokenReceiveContext context)
         {
+
         }
     }
 }

@@ -23,5 +23,8 @@
     <Setting Name="AuthServer" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://localhost:57585</Value>
     </Setting>
+    <Setting Name="ResourceServer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:57653</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

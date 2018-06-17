@@ -4,14 +4,16 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Security;
 
 namespace OAuthSample.API.Controllers
 {
     public class UserController : ApiController
     {
-        [Authorize]
+        [HttpGet]
         public string GetUsers()
         {
+            var user = User.Identity;
             return "From OAuthSample.API";
         }
     }
