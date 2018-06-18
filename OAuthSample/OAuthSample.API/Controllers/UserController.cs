@@ -10,6 +10,7 @@ namespace OAuthSample.API.Controllers
 {
     public class UserController : ApiController
     {
+        [Authorize]
         [HttpGet]
         public string GetUsers()
         {
